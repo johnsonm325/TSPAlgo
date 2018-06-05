@@ -1,9 +1,9 @@
 /************************************
 * CS 325
 * Final Project
-* Joshua Louis Ceciliani
-* Jeremy Einhorn
-* Michael Johnson
+* Joshua Louis Ceciliani - the man
+* Jeremy Einhorn - the myth
+* Michael Johnson - the legend
 ************************************/
 
 #include <iostream>
