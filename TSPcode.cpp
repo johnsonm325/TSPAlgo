@@ -56,7 +56,7 @@ float distance(float x1, float x2, float y1, float y2)
 
 void TSPalgo(int** adjMat, int numCities, int citySet)
 {
-    // citSet is representation of the set of cities via a mased binary number
+    // citSet is representation of the set of cities via a masked binary number
     // full set of cites = 1 1 1 1 0 = 30 (since the first number is the starting point
     // 4th city is visited (out of 5) = 1 0 1 1 0 = 22
 
@@ -100,7 +100,8 @@ int minPath(int **memoPath, int **optPath, int **adjMat, int currCity, int remai
     // setCities = the binary representation of the cities that have been visited thus far
 
     int mask,
-        citiesMasked;
+        citiesMasked,
+		res = std::numeric_limits<int>::max();
 
     if (memoPath[currCity][remainingSet] != -1)
     {
@@ -124,12 +125,20 @@ int minPath(int **memoPath, int **optPath, int **adjMat, int currCity, int remai
         // + 1 0 1 1 0
         // = 1 0 1 1 0 this is an example of the
         citiesMasked = remainingSet&mask;
+
+		if (citiesMasked != remainingSet)
+		{
+			int temp = adjMat[currCity][i] + minPath(...); //FIX: Correct values needed for minPath
+			if (temp < res)
+			{
+				res = temp;
+				optPath[currCity][remainingSet] = i;
+			}
+		}
     }
-}
 
-
-
-
+	return memoPath[currCity][remainingSet] = res;
+} //FIX: 'minPath': not all control paths return a value
 
 
 int main()
@@ -141,7 +150,7 @@ int main()
 	vector<Cities>   citiesList;
 
 	cout << "What file do you want to read from?" << endl;
-	cin >> fileName;
+	getline(cin, fileName);
 
 	//open the file
 	cout << "Opening input file." << endl;
@@ -166,21 +175,21 @@ int main()
     }
 
 	float **adjMatrix = new float*[citiesList.size()];
-	for (int i = 0; i < citiesList.size(); i++)
+	for (size_t i = 0; i < citiesList.size(); i++)
 		adjMatrix[i] = new float[citiesList.size()];
 
-	for (int i = 0; i < citiesList.size(); i++)
+	for (size_t i = 0; i < citiesList.size(); i++)
 	{
-        for (int j = 0; j < citiesList.size(); j++)
+        for (size_t j = 0; j < citiesList.size(); j++)
         {
-            adjMatrix[i][j] = distance(citiesList[i].x, citiesList[j].x, citiesList[i].y, citiesList[j].y);
+            adjMatrix[i][j] = distance(citiesList[i].x, citiesList[j].x, citiesList[i].y, citiesList[j].y); // FIX: 'argument': conversion from 'int' to 'float', possible loss of data
         }
 	}
 
 
-	for (int i = 0; i < citiesList.size(); i++)
+	for (size_t i = 0; i < citiesList.size(); i++)
 	{
-        for (int j = 0; j < citiesList.size(); j++)
+        for (size_t j = 0; j < citiesList.size(); j++)
         {
             cout << adjMatrix[i][j] << " ";
         }
