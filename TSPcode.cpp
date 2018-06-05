@@ -128,7 +128,7 @@ int minPath(int **memoPath, int **optPath, int **adjMat, int currCity, int remai
 
 		if (citiesMasked != remainingSet)
 		{
-			int temp = adjMat[currCity][i] + minPath(...); //FIX: Correct values needed for minPath
+			int temp = adjMat[currCity][i] + minPath(memoPath, optPath, adjMat, currCity, remainingSet, numCit, setCities); //FIX: Potential correction needed on values
 			if (temp < res)
 			{
 				res = temp;
@@ -138,7 +138,7 @@ int minPath(int **memoPath, int **optPath, int **adjMat, int currCity, int remai
     }
 
 	return memoPath[currCity][remainingSet] = res;
-} //FIX: 'minPath': not all control paths return a value
+} 
 
 
 int main()
