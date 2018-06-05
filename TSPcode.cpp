@@ -25,7 +25,7 @@ using std::ios;
 using std::string;
 using std::vector;
 
-struct cities
+struct Cities
 {
 	int city;
 	int x;
@@ -33,8 +33,8 @@ struct cities
 };
 
 float distance(float, float, float, float);
-void TSPalgo(&int[][], int, int);
-int minPath(&int[][], &int[][], int, int);
+void TSPalgo(int**, int, int);
+int minPath(int**, int**, int**, int, int, int, int);
 
 /*****************************************************
 ** Calculate distance for adjacency matrix
@@ -54,19 +54,24 @@ float distance(float x1, float x2, float y1, float y2)
 **
 *****************************************************/
 
-void TSPalgo(int &adjMat[][], int numCities, int citySet)
+void TSPalgo(int** adjMat, int numCities, int citySet)
 {
     // citSet is representation of the set of cities via a mased binary number
     // full set of cites = 1 1 1 1 0 = 30 (since the first number is the starting point
     // 4th city is visited (out of 5) = 1 0 1 1 0 = 22
 
-    int memoMinDist[numCities][citySet]; // memoized shortest path graph
-    int path[numCities][citySet]; // uses bit masked number to determine optimal path
+    int **memoMinDist = new int*[numCities]; // memoized shortest path graph
+	for (int i = 0; i < numCities; i++)
+		memoMinDist[i] = new int[citySet];
+
+    int **path = new int*[numCities]; // uses bit masked number to determine optimal path
+	for (int i = 0; i < numCities; i++)
+		path[i] = new int[citySet];
 
 
     for (int i = 0; i < numCities; i++)
     {
-        for (int j = 0; j < citySet)
+        for (int j = 0; j < citySet; j++)
         {
             // set to -1 so we can compare if == -1
             // set the first line from adjacency matrix
@@ -83,10 +88,11 @@ void TSPalgo(int &adjMat[][], int numCities, int citySet)
         }
     }
 
-
+	delete[] memoMinDist;
+	delete[] path;
 }
 
-int minPath(int &memoPath[][], int &optPath[][], int currCity, int remainingSet, int numCit, int setCities)
+int minPath(int **memoPath, int **optPath, int **adjMat, int currCity, int remainingSet, int numCit, int setCities)
 {
     // currCity = current city we are measuring distance from
     // remainingSet = the set of cities that haven't been visited
@@ -132,7 +138,7 @@ int main()
 	string			 fileName,
                      str;
     int              count = 0;
-	vector<cities>   citiesList;
+	vector<Cities>   citiesList;
 
 	cout << "What file do you want to read from?" << endl;
 	cin >> fileName;
@@ -149,10 +155,9 @@ int main()
 		return 0;
 	}
 
-	while (inputFile.eof() == false)
+	while (getline(inputFile, str, '\n'))
 	{
-        citiesList.push_back(cities());
-        getline(inputFile, str, '\n');
+        citiesList.push_back(Cities());
         istringstream num(str);
         num >> citiesList[count].city;
         num >> citiesList[count].x;
@@ -160,7 +165,9 @@ int main()
         count++;
     }
 
-    float adjMatrix[citiesList.size()][citiesList.size()];
+	float **adjMatrix = new float*[citiesList.size()];
+	for (int i = 0; i < citiesList.size(); i++)
+		adjMatrix[i] = new float[citiesList.size()];
 
 	for (int i = 0; i < citiesList.size(); i++)
 	{
