@@ -93,7 +93,7 @@ void TSPalgo(int** adjMat, int numCities, int citySet)
 	delete[] path;
 }
 //get the path
-void path(int **optPath, int currCity, int remainingSet, int setCities)
+void getPath(int **optPath, int currCity, int remainingSet, int setCities)
 {
 	if (optPath[currCity][remainingSet] == -1) //reached the null set 
 	{
@@ -106,7 +106,7 @@ void path(int **optPath, int currCity, int remainingSet, int setCities)
 
 	cout << temp << "  ";
 
-	path(optPath, temp, citiesMasked, setCities);
+	getPath(optPath, temp, citiesMasked, setCities);
 
 }
 
