@@ -34,7 +34,7 @@ struct Cities
 
 float distance(float, float, float, float);
 void TSPalgo(int**, int, int);
-void path(int **optPath, int currCity, int remainingSet, int setCities);
+void getPath(int **optPath, int currCity, int remainingSet, int setCities);
 int minPath(int**, int**, int**, int, int, int, int);
 
 /*****************************************************
