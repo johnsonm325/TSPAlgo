@@ -34,8 +34,8 @@ struct Cities
 
 float distance(float, float, float, float);
 void TSPalgo(int**, int, int);
-void getPath(int **optPath, int currCity, int remainingSet, int setCities);
 int minPath(int**, int**, int**, int, int, int, int);
+void getPath(int**, int, int, int);
 
 /*****************************************************
 ** Calculate distance for adjacency matrix
@@ -89,25 +89,23 @@ void TSPalgo(int** adjMat, int numCities, int citySet)
         }
     }
 
-	delete[] memoMinDist;
-	delete[] path;
-}
-//get the path
-void getPath(int **optPath, int currCity, int remainingSet, int setCities)
-{
-	if (optPath[currCity][remainingSet] == -1) //reached the null set 
+	int result = minPath(memoMinDist, path, adjMat, 0, citySet - 2, numCities, citySet);
+
+	cout << "Minimum cost: " << result << endl;
+
+	getPath(path, 0, citySet - 2, citySet);
+
+	for (int i = 0; i < numCities; i++)
 	{
-		return;
+		delete[] memoMinDist[i];
 	}
+	delete[] memoMinDist;
 
-	int temp = optPath[currCity][remainingSet];
-	int mask = (setCities - 1) - (1 << temp);
-	int citiesMasked = remainingSet&mask;
-
-	cout << temp << "  ";
-
-	getPath(optPath, temp, citiesMasked, setCities);
-
+	for (int i = 0; i < numCities; i++)
+	{
+		delete[] path[i];
+	}
+	delete[] path;
 }
 
 int minPath(int **memoPath, int **optPath, int **adjMat, int currCity, int remainingSet, int numCit, int setCities)
@@ -119,6 +117,7 @@ int minPath(int **memoPath, int **optPath, int **adjMat, int currCity, int remai
 
     int mask,
         citiesMasked,
+		nextCity,
 		res = std::numeric_limits<int>::max();
 
     if (memoPath[currCity][remainingSet] != -1)
@@ -146,17 +145,39 @@ int minPath(int **memoPath, int **optPath, int **adjMat, int currCity, int remai
 
 		if (citiesMasked != remainingSet)
 		{
-			int temp = adjMat[currCity][i] + minPath(memoPath, optPath, adjMat, currCity, remainingSet, numCit, setCities); //FIX: Potential correction needed on values
+			int temp = adjMat[currCity][i] + minPath(memoPath, optPath, adjMat, currCity, citiesMasked, numCit, setCities); //FIX: Potential correction needed on values
 			if (temp < res)
 			{
 				res = temp;
 				optPath[currCity][remainingSet] = i;
+				nextCity = i;
 			}
 		}
     }
+	currCity = nextCity;
 
 	return memoPath[currCity][remainingSet] = res;
 } 
+
+/*****************************************************
+**
+*****************************************************/
+void getPath(int **optPath, int currCity, int remainingSet, int setCities)
+{
+	if (optPath[currCity][remainingSet] == -1) //reached the null set 
+	{
+		return;
+	}
+
+	int temp = optPath[currCity][remainingSet];
+	int mask = (setCities - 1) - (1 << temp);
+	int citiesMasked = remainingSet&mask;
+
+	cout << temp << "  ";
+
+	getPath(optPath, temp, citiesMasked, setCities);
+
+}
 
 
 int main()
@@ -192,9 +213,9 @@ int main()
         count++;
     }
 
-	float **adjMatrix = new float*[citiesList.size()];
+	int **adjMatrix = new int*[citiesList.size()];
 	for (size_t i = 0; i < citiesList.size(); i++)
-		adjMatrix[i] = new float[citiesList.size()];
+		adjMatrix[i] = new int[citiesList.size()];
 
 	for (size_t i = 0; i < citiesList.size(); i++)
 	{
@@ -220,8 +241,19 @@ int main()
 
 	cout << "File closed." << endl;
 
+	int sizePow = (int) pow(2, count);
+
+	TSPalgo(adjMatrix, count, sizePow);
+
 	cin.get();
     cin.get();
+
+	for (int i = 0; i < count; i++)
+	{
+		delete[] adjMatrix[i];
+	}
+	delete[] adjMatrix;
+	
 
 	return 0;
 }
