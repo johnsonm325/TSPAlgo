@@ -34,6 +34,7 @@ struct Cities
 
 float distance(float, float, float, float);
 void TSPalgo(int**, int, int);
+void getPath(int **optPath, int currCity, int remainingSet, int setCities);
 int minPath(int**, int**, int**, int, int, int, int);
 
 /*****************************************************
@@ -90,6 +91,23 @@ void TSPalgo(int** adjMat, int numCities, int citySet)
 
 	delete[] memoMinDist;
 	delete[] path;
+}
+//get the path
+void getPath(int **optPath, int currCity, int remainingSet, int setCities)
+{
+	if (optPath[currCity][remainingSet] == -1) //reached the null set 
+	{
+		return;
+	}
+
+	int temp = optPath[currCity][remainingSet];
+	int mask = (setCities - 1) - (1 << temp);
+	int citiesMasked = remainingSet&mask;
+
+	cout << temp << "  ";
+
+	getPath(optPath, temp, citiesMasked, setCities);
+
 }
 
 int minPath(int **memoPath, int **optPath, int **adjMat, int currCity, int remainingSet, int numCit, int setCities)
